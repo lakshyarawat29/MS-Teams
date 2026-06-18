@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import {
   Box, Typography, CircularProgress, Chip, IconButton, Tooltip, Divider, Avatar, AvatarGroup,
+  Dialog, DialogTitle, DialogContent, List, ListItem, ListItemText,
 } from '@mui/material'
 import TagIcon from '@mui/icons-material/Tag'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
@@ -9,7 +10,9 @@ import PeopleIcon from '@mui/icons-material/People'
 import SearchIcon from '@mui/icons-material/Search'
 import PhoneIcon from '@mui/icons-material/Phone'
 import VideocamIcon from '@mui/icons-material/Videocam'
+import PushPinIcon from '@mui/icons-material/PushPin'
 import CallModal from '../components/CallModal'
+import MembersPanel from '../components/MembersPanel'
 import { channelService } from '../services/channelService'
 import { messageService } from '../services/messageService'
 import { teamService } from '../services/teamService'
@@ -31,6 +34,9 @@ export default function ChannelPage() {
   const [typingUsers, setTypingUsers] = useState<Map<string, string>>(new Map())
   const [callOpen, setCallOpen] = useState(false)
   const [callVideoOff, setCallVideoOff] = useState(false)
+  const [showMembers, setShowMembers] = useState(false)
+  const [pinnedMessageIds, setPinnedMessageIds] = useState<Set<string>>(new Set())
+  const [showPinnedDialog, setShowPinnedDialog] = useState(false)
 
   const shownIds = useRef<Set<string>>(new Set())
   const typingTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map())
@@ -227,6 +233,22 @@ export default function ChannelPage() {
             <SearchIcon sx={{ fontSize: 18 }} />
           </IconButton>
         </Tooltip>
+        {pinnedMessageIds.size > 0 && (
+          <Tooltip title="View pinned messages">
+            <Chip
+              icon={<PushPinIcon sx={{ fontSize: '13px !important' }} />}
+              label={`${pinnedMessageIds.size} pinned`}
+              size="small"
+              onClick={() => setShowPinnedDialog(true)}
+              sx={{ height: 22, fontSize: '0.7rem', borderRadius: 1, cursor: 'pointer', bgcolor: 'rgba(124,127,212,0.15)', border: '1px solid rgba(124,127,212,0.4)', color: 'primary.light', '&:hover': { bgcolor: 'rgba(124,127,212,0.25)' } }}
+            />
+          </Tooltip>
+        )}
+        <Tooltip title={showMembers ? 'Hide members' : 'Show members'}>
+          <IconButton size="small" onClick={() => setShowMembers((v) => !v)} sx={{ color: showMembers ? 'primary.light' : 'text.secondary', bgcolor: showMembers ? 'rgba(124,127,212,0.15)' : 'transparent', '&:hover': { color: 'primary.light', bgcolor: 'rgba(124,127,212,0.1)' } }}>
+            <PeopleIcon sx={{ fontSize: 18 }} />
+          </IconButton>
+        </Tooltip>
 
         <Chip
           icon={<FiberManualRecordIcon sx={{ fontSize: '9px !important' }} />}
@@ -238,30 +260,48 @@ export default function ChannelPage() {
         />
       </Box>
 
-      {/* Messages */}
-      <MessageList
-        messages={messages}
-        currentUserId={user?.id}
-        onEditMessage={handleEditMessage}
-        onDeleteMessage={handleDeleteMessage}
-        onReaction={handleReaction}
-      />
+      {/* Messages + optional right panel */}
+      <Box sx={{ display: 'flex', flex: 1, minHeight: 0 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
+          <MessageList
+            messages={messages}
+            currentUserId={user?.id}
+            pinnedMessageIds={pinnedMessageIds}
+            onEditMessage={handleEditMessage}
+            onDeleteMessage={handleDeleteMessage}
+            onReaction={handleReaction}
+            onPin={(id, pinned) => {
+              setPinnedMessageIds((prev) => {
+                const next = new Set(prev)
+                if (pinned) next.add(id); else next.delete(id)
+                return next
+              })
+            }}
+          />
 
-      {/* Typing indicator */}
-      <Box sx={{ px: 3, minHeight: 20, mb: 0.5 }}>
-        {typingText && (
-          <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic', fontSize: '0.75rem' }}>
-            {typingText} {typingUsers.size === 1 ? 'is' : 'are'} typing…
-          </Typography>
+          {/* Typing indicator */}
+          <Box sx={{ px: 3, minHeight: 20, mb: 0.5 }}>
+            {typingText && (
+              <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic', fontSize: '0.75rem' }}>
+                {typingText} {typingUsers.size === 1 ? 'is' : 'are'} typing…
+              </Typography>
+            )}
+          </Box>
+
+          {/* Input */}
+          <MessageInput
+            onSend={handleSend}
+            onTypingChange={handleTypingChange}
+            placeholder={`Message #${channel?.name ?? '…'}`}
+            members={members}
+          />
+        </Box>
+
+        {/* Members panel */}
+        {showMembers && (
+          <MembersPanel members={members} onClose={() => setShowMembers(false)} />
         )}
       </Box>
-
-      {/* Input */}
-      <MessageInput
-        onSend={handleSend}
-        onTypingChange={handleTypingChange}
-        placeholder={`Message #${channel?.name ?? '…'}`}
-      />
 
       {/* Call Modal */}
       <CallModal
@@ -272,6 +312,30 @@ export default function ChannelPage() {
         videoOff={callVideoOff}
         title={`#${channel?.name ?? 'channel'}`}
       />
+
+      {/* Pinned messages dialog */}
+      <Dialog open={showPinnedDialog} onClose={() => setShowPinnedDialog(false)} maxWidth="sm" fullWidth
+        PaperProps={{ sx: { bgcolor: '#252535', border: '1px solid rgba(205,214,244,0.1)' } }}>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 1 }}>
+          <PushPinIcon sx={{ color: 'primary.light', fontSize: 20 }} />
+          Pinned Messages ({pinnedMessageIds.size})
+        </DialogTitle>
+        <DialogContent sx={{ pt: 0 }}>
+          <List disablePadding>
+            {messages.filter((m) => pinnedMessageIds.has(m.id)).map((m) => (
+              <ListItem key={m.id} disablePadding sx={{ py: 0.75, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                <ListItemText
+                  primary={<Typography variant="body2" sx={{ fontSize: '0.88rem' }}>{m.content.slice(0, 120)}{m.content.length > 120 ? '…' : ''}</Typography>}
+                  secondary={`${m.senderFirstName} ${m.senderLastName}`}
+                />
+              </ListItem>
+            ))}
+            {pinnedMessageIds.size === 0 && (
+              <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>No pinned messages yet.</Typography>
+            )}
+          </List>
+        </DialogContent>
+      </Dialog>
     </Box>
   )
 }
