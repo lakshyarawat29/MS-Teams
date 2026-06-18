@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react'
 import {
   Box, Typography, TextField, Button, Select, MenuItem,
-  FormControl, InputLabel, Paper, Snackbar, Alert, CircularProgress,
+  FormControl, InputLabel, Paper, Snackbar, Alert, CircularProgress, Divider,
 } from '@mui/material'
+import LogoutIcon from '@mui/icons-material/Logout'
 import { userService } from '../services/userService'
+import { authService } from '../services/authService'
 import { useAuthStore } from '../store/authStore'
+import { useNavigate } from 'react-router-dom'
 import type { UserStatus } from '../types'
 
 const STATUS_OPTIONS: UserStatus[] = ['ONLINE', 'AWAY', 'BUSY', 'OFFLINE']
 
 export default function ProfilePage() {
-  const { user, setAuth, token, refreshToken } = useAuthStore()
+  const { user, setAuth, token, refreshToken, clearAuth } = useAuthStore()
+  const navigate = useNavigate()
 
   const [firstName, setFirstName] = useState(user?.firstName ?? '')
   const [lastName, setLastName] = useState(user?.lastName ?? '')
@@ -58,6 +62,14 @@ export default function ProfilePage() {
     } catch {
       setSnack({ msg: 'Failed to update status.', type: 'error' })
     }
+  }
+
+  const handleLogout = async () => {
+    try {
+      if (refreshToken) await authService.logout(refreshToken)
+    } catch { /* ignore — clear locally regardless */ }
+    clearAuth()
+    navigate('/login')
   }
 
   return (
@@ -113,6 +125,19 @@ export default function ProfilePage() {
             ))}
           </Select>
         </FormControl>
+      </Paper>
+
+      <Paper sx={{ p: 3, mt: 3 }}>
+        <Typography variant="subtitle1" fontWeight={600} gutterBottom>Account</Typography>
+        <Divider sx={{ mb: 2 }} />
+        <Button
+          variant="outlined"
+          color="error"
+          startIcon={<LogoutIcon />}
+          onClick={handleLogout}
+        >
+          Sign out
+        </Button>
       </Paper>
 
       <Snackbar

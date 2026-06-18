@@ -321,18 +321,18 @@ export default function Sidebar() {
       sx={{
         width: SIDEBAR_WIDTH,
         flexShrink: 0,
-        bgcolor: '#201F1F',
+        bgcolor: '#181825',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        borderRight: '1px solid rgba(255,255,255,0.06)',
+        borderRight: '1px solid rgba(205,214,244,0.06)',
       }}
     >
       {/* Section header */}
       <Box sx={{
         px: 2, py: 1.5,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        borderBottom: '1px solid rgba(205,214,244,0.06)',
         minHeight: 52,
       }}>
         <Typography variant="h6" fontWeight={700} sx={{ fontSize: '1rem' }}>
@@ -355,10 +355,10 @@ export default function Sidebar() {
       </Box>
 
       {/* Footer: user info */}
-      <Divider sx={{ borderColor: 'rgba(255,255,255,0.06)' }} />
+      <Divider sx={{ borderColor: 'rgba(205,214,244,0.06)' }} />
       <Box sx={{
         p: 1.5, display: 'flex', alignItems: 'center', gap: 1.5,
-        cursor: 'pointer', '&:hover': { bgcolor: 'rgba(255,255,255,0.04)' },
+        cursor: 'pointer', '&:hover': { bgcolor: 'rgba(205,214,244,0.04)' },
         transition: 'background 0.15s',
       }}
         onClick={() => navigate('/profile')}

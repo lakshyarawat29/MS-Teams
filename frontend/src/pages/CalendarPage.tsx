@@ -98,13 +98,13 @@ export default function CalendarPage() {
   const upcoming = meetings.filter(isUpcoming)
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: '#292828' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: '#1E1E2E' }}>
       {/* Header */}
       <Box sx={{
         px: 3, py: 1.5, minHeight: 52,
         display: 'flex', alignItems: 'center', gap: 2,
-        borderBottom: '1px solid rgba(255,255,255,0.08)',
-        bgcolor: '#292828',
+        borderBottom: '1px solid rgba(205,214,244,0.08)',
+        bgcolor: '#1E1E2E',
       }}>
         <Typography variant="subtitle1" fontWeight={700} sx={{ fontSize: '0.95rem' }}>
           Meetings

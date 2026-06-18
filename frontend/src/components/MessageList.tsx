@@ -217,7 +217,7 @@ function MessageRow({
         sx={{
           position: 'absolute', right: 16, top: -16,
           display: 'flex', gap: 0.25,
-          bgcolor: '#2D2C2C',
+          bgcolor: '#252535',
           border: '1px solid rgba(255,255,255,0.1)',
           borderRadius: 1.5, px: 0.5, py: 0.25,
           opacity: 0, transition: 'opacity 0.15s',
@@ -252,7 +252,7 @@ function MessageRow({
 
       {/* Emoji picker */}
       <Menu anchorEl={emojiAnchor} open={Boolean(emojiAnchor)} onClose={() => setEmojiAnchor(null)}
-        PaperProps={{ sx: { bgcolor: '#2D2C2C' } }}>
+        PaperProps={{ sx: { bgcolor: '#181825' } }}>
         <Box sx={{ display: 'flex', gap: 0.25, px: 0.75, py: 0.5 }}>
           {QUICK_EMOJIS.map((emoji) => {
             const existing = message.reactions?.find((r) => r.emoji === emoji)
@@ -273,7 +273,7 @@ function MessageRow({
 
       {/* More menu */}
       <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}
-        PaperProps={{ sx: { bgcolor: '#2D2C2C', minWidth: 160 } }}>
+        PaperProps={{ sx: { bgcolor: '#181825', minWidth: 160 } }}>
         <MenuItem dense onClick={() => {
           navigator.clipboard.writeText(message.content)
           setMenuAnchor(null)

@@ -93,7 +93,7 @@ export default function DashboardPage() {
           <Grid container spacing={2}>
             {myTeams.map((team) => (
               <Grid item xs={12} sm={6} md={4} key={team.id}>
-                <Card sx={{ bgcolor: '#252525', border: '1px solid rgba(255,255,255,0.07)', '&:hover': { borderColor: 'primary.main' }, transition: 'border-color 0.2s' }}>
+                <Card sx={{ bgcolor: '#252535', border: '1px solid rgba(205,214,244,0.08)', '&:hover': { borderColor: 'primary.main', boxShadow: '0 4px 20px rgba(124,127,212,0.15)' }, transition: 'border-color 0.2s, box-shadow 0.2s' }}>
                   <CardActionArea onClick={() => navigate(`/team/${team.id}`)}>
                     <CardContent sx={{ p: 2 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
@@ -129,7 +129,7 @@ export default function DashboardPage() {
           <Grid container spacing={2}>
             {discoverTeams.map((team) => (
               <Grid item xs={12} sm={6} md={4} key={team.id}>
-                <Card sx={{ bgcolor: '#252525', border: '1px solid rgba(255,255,255,0.07)' }}>
+                <Card sx={{ bgcolor: '#252535', border: '1px solid rgba(205,214,244,0.08)' }}>
                   <CardContent sx={{ p: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
                       <Avatar sx={{ width: 36, height: 36, bgcolor: teamColor(team.name), borderRadius: 1.5, fontSize: '0.9rem' }}>

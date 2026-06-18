@@ -1,10 +1,13 @@
 ﻿import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams } from 'react-router-dom'
-import { Box, Typography, Avatar, CircularProgress, Divider, Badge } from '@mui/material'
+import { Box, Typography, Avatar, CircularProgress, Divider, Badge, IconButton, Tooltip } from '@mui/material'
+import PhoneIcon from '@mui/icons-material/Phone'
+import VideocamIcon from '@mui/icons-material/Videocam'
 import { dmService } from '../services/dmService'
 import { useDMWebSocket } from '../hooks/useRealtime'
 import { useAuthStore } from '../store/authStore'
 import MessageInput from '../components/MessageInput'
+import CallModal from '../components/CallModal'
 import type { DirectMessage, Conversation, UserStatus } from '../types'
 
 function formatTime(iso: string) {
@@ -38,6 +41,8 @@ export default function DMPage() {
   const [typingText, setTypingText] = useState('')
   const shownIds = useRef<Set<string>>(new Set())
   const bottomRef = useRef<HTMLDivElement>(null)
+  const [callOpen, setCallOpen] = useState(false)
+  const [callVideoOff, setCallVideoOff] = useState(false)
 
   useEffect(() => {
     if (conversationId) {
@@ -113,9 +118,9 @@ export default function DMPage() {
       {/* Header */}
       <Box sx={{
         px: 3, minHeight: 52,
-        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        borderBottom: '1px solid rgba(205,214,244,0.08)',
         display: 'flex', alignItems: 'center', gap: 1.5,
-        bgcolor: '#292828',
+        bgcolor: '#1E1E2E',
       }}>
         <Badge
           overlap="circular"
@@ -124,7 +129,7 @@ export default function DMPage() {
             <Box sx={{
               width: 10, height: 10, borderRadius: '50%',
               bgcolor: presenceColor(conversation?.participantStatus),
-              border: '2px solid #292828',
+              border: '2px solid #1E1E2E',
             }} />
           }
         >
@@ -140,6 +145,25 @@ export default function DMPage() {
             {conversation?.participantEmail}
           </Typography>
         </Box>
+        <Box sx={{ flex: 1 }} />
+        <Tooltip title="Voice call">
+          <IconButton
+            size="small"
+            onClick={() => { setCallVideoOff(true); setCallOpen(true) }}
+            sx={{ color: 'text.secondary', '&:hover': { color: '#22c55e', bgcolor: 'rgba(34,197,94,0.1)' } }}
+          >
+            <PhoneIcon sx={{ fontSize: 18 }} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Video call">
+          <IconButton
+            size="small"
+            onClick={() => { setCallVideoOff(false); setCallOpen(true) }}
+            sx={{ color: 'text.secondary', '&:hover': { color: '#6264A7', bgcolor: 'rgba(98,100,167,0.15)' } }}
+          >
+            <VideocamIcon sx={{ fontSize: 18 }} />
+          </IconButton>
+        </Tooltip>
       </Box>
 
       {/* Messages */}
@@ -206,6 +230,15 @@ export default function DMPage() {
       )}
 
       <MessageInput onSend={handleSend} placeholder={`Message ${otherName}`} />
+
+      <CallModal
+        open={callOpen}
+        onClose={() => setCallOpen(false)}
+        roomName={`teams-clone-dm-${conversationId}`}
+        displayName={`${user?.firstName} ${user?.lastName}`}
+        videoOff={callVideoOff}
+        title={otherName}
+      />
     </Box>
   )
 }

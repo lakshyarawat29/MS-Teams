@@ -32,7 +32,7 @@ export default function MainLayout() {
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          bgcolor: '#292828',
+          bgcolor: '#1E1E2E',
           minWidth: 0,
         }}
       >

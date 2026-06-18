@@ -70,12 +70,12 @@ export default function SearchPage() {
     : 0
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: '#292828' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: '#1E1E2E' }}>
       {/* Search header */}
       <Box sx={{
         px: 3, py: 2,
         borderBottom: '1px solid rgba(255,255,255,0.08)',
-        bgcolor: '#201F1F',
+        bgcolor: '#181825',
       }}>
         <Box sx={{
           display: 'flex', alignItems: 'center', gap: 1.5,
@@ -100,7 +100,7 @@ export default function SearchPage() {
       </Box>
 
       {/* Tabs */}
-      <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.08)', bgcolor: '#201F1F' }}>
+      <Box sx={{ borderBottom: '1px solid rgba(205,214,244,0.08)', bgcolor: '#181825' }}>
         <Tabs
           value={tab}
           onChange={handleTabChange}
@@ -142,7 +142,6 @@ export default function SearchPage() {
                   {results.messages.map((msg: any) => (
                     <ListItem key={msg.id} disablePadding>
                       <ListItemButton
-                        onClick={() => navigate(`/channel/${msg.channelId}`)}
                         onClick={() => navigate(`/channel/${msg.channelId}`)}
                         sx={{ borderRadius: 1, py: 1 }}
                       >

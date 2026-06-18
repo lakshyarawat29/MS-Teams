@@ -7,6 +7,9 @@ import TagIcon from '@mui/icons-material/Tag'
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import PeopleIcon from '@mui/icons-material/People'
 import SearchIcon from '@mui/icons-material/Search'
+import PhoneIcon from '@mui/icons-material/Phone'
+import VideocamIcon from '@mui/icons-material/Videocam'
+import CallModal from '../components/CallModal'
 import { channelService } from '../services/channelService'
 import { messageService } from '../services/messageService'
 import { teamService } from '../services/teamService'
@@ -26,6 +29,8 @@ export default function ChannelPage() {
   const [loading, setLoading] = useState(true)
   const [connected, setConnected] = useState(false)
   const [typingUsers, setTypingUsers] = useState<Map<string, string>>(new Map())
+  const [callOpen, setCallOpen] = useState(false)
+  const [callVideoOff, setCallVideoOff] = useState(false)
 
   const shownIds = useRef<Set<string>>(new Set())
   const typingTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map())
@@ -163,8 +168,8 @@ export default function ChannelPage() {
           display: 'flex',
           alignItems: 'center',
           gap: 1.5,
-          borderBottom: '1px solid rgba(255,255,255,0.08)',
-          bgcolor: '#292828',
+          borderBottom: '1px solid rgba(205,214,244,0.08)',
+          bgcolor: '#1E1E2E',
         }}
       >
         <TagIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
@@ -187,7 +192,7 @@ export default function ChannelPage() {
         {members.length > 0 && (
           <Tooltip title={`${members.length} members`}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, cursor: 'default' }}>
-              <AvatarGroup max={4} sx={{ '& .MuiAvatar-root': { width: 24, height: 24, fontSize: '0.65rem', border: '1.5px solid #292828' } }}>
+              <AvatarGroup max={4} sx={{ '& .MuiAvatar-root': { width: 24, height: 24, fontSize: '0.65rem', border: '1.5px solid #1E1E2E' } }}>
                 {members.map((m) => (
                   <Avatar key={m.userId} sx={{ bgcolor: 'primary.dark' }}>
                     {m.firstName.charAt(0).toUpperCase()}
@@ -199,6 +204,24 @@ export default function ChannelPage() {
           </Tooltip>
         )}
 
+        <Tooltip title="Voice call">
+          <IconButton
+            size="small"
+            onClick={() => { setCallVideoOff(true); setCallOpen(true) }}
+            sx={{ color: 'text.secondary', '&:hover': { color: '#22c55e', bgcolor: 'rgba(34,197,94,0.1)' } }}
+          >
+            <PhoneIcon sx={{ fontSize: 18 }} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Video call">
+          <IconButton
+            size="small"
+            onClick={() => { setCallVideoOff(false); setCallOpen(true) }}
+            sx={{ color: 'text.secondary', '&:hover': { color: '#6264A7', bgcolor: 'rgba(98,100,167,0.15)' } }}
+          >
+            <VideocamIcon sx={{ fontSize: 18 }} />
+          </IconButton>
+        </Tooltip>
         <Tooltip title="Search in channel">
           <IconButton size="small" sx={{ color: 'text.secondary' }}>
             <SearchIcon sx={{ fontSize: 18 }} />
@@ -238,6 +261,16 @@ export default function ChannelPage() {
         onSend={handleSend}
         onTypingChange={handleTypingChange}
         placeholder={`Message #${channel?.name ?? '…'}`}
+      />
+
+      {/* Call Modal */}
+      <CallModal
+        open={callOpen}
+        onClose={() => setCallOpen(false)}
+        roomName={`teams-clone-channel-${channelId}`}
+        displayName={`${user?.firstName} ${user?.lastName}`}
+        videoOff={callVideoOff}
+        title={`#${channel?.name ?? 'channel'}`}
       />
     </Box>
   )

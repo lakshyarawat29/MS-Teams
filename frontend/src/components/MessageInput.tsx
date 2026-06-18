@@ -101,12 +101,12 @@ export default function MessageInput({ onSend, onTypingChange, disabled, placeho
     <Box
       sx={{
         mx: 2, mb: 2,
-        border: '1px solid rgba(255,255,255,0.15)',
+        border: '1px solid rgba(205,214,244,0.12)',
         borderRadius: 2,
-        bgcolor: '#3B3A3A',
+        bgcolor: '#252535',
         overflow: 'hidden',
-        '&:focus-within': { borderColor: 'rgba(98,100,167,0.7)', boxShadow: '0 0 0 1px rgba(98,100,167,0.3)' },
-        transition: 'border-color 0.15s, box-shadow 0.15s',
+        '&:focus-within': { borderColor: 'rgba(124,127,212,0.6)', boxShadow: '0 0 0 2px rgba(124,127,212,0.15)' },
+        transition: 'border-color 0.2s, box-shadow 0.2s',
       }}
     >
       {/* Upload progress */}
