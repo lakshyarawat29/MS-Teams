@@ -1,0 +1,26 @@
+# ── Backend ──────────────────────────────────────────
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+backend/*.log
+backend/uploads/
+
+# ── Frontend ─────────────────────────────────────────
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
+.vite/
+
+# ── IDE / OS ─────────────────────────────────────────
+.idea/
+*.iml
+.vscode/settings.json
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# ── Env / secrets ────────────────────────────────────
+.env
+.env.*
+!.env.example
