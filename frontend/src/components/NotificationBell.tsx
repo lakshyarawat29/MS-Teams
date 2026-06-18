@@ -25,7 +25,8 @@ export default function NotificationBell() {
   const loadUnreadCount = async () => {
     try {
       const res = await notificationService.getUnreadCount()
-      setUnread(Number(res.data.data))
+      const data = res.data.data as any
+      setUnread(typeof data === 'number' ? data : Number(data?.count ?? 0))
     } catch { /* ignore */ }
   }
 

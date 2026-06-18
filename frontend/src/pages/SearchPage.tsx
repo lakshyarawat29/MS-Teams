@@ -9,6 +9,7 @@ import TagIcon from '@mui/icons-material/Tag'
 import PersonIcon from '@mui/icons-material/Person'
 import MessageIcon from '@mui/icons-material/Message'
 import { searchService } from '../services/searchService'
+import { dmService } from '../services/dmService'
 
 type TabValue = 'all' | 'messages' | 'channels' | 'users'
 
@@ -55,6 +56,13 @@ export default function SearchPage() {
     } catch { /* ignore */ } finally {
       setLoading(false)
     }
+  }
+
+  const openDM = async (userId: string) => {
+    try {
+      const res = await dmService.openConversation(userId)
+      navigate(`/dm/${res.data.data.id}`)
+    } catch { /* ignore */ }
   }
 
   const totalCount = results
@@ -135,6 +143,7 @@ export default function SearchPage() {
                     <ListItem key={msg.id} disablePadding>
                       <ListItemButton
                         onClick={() => navigate(`/channel/${msg.channelId}`)}
+                        onClick={() => navigate(`/channel/${msg.channelId}`)}
                         sx={{ borderRadius: 1, py: 1 }}
                       >
                         <ListItemAvatar>
@@ -208,7 +217,7 @@ export default function SearchPage() {
                 <List dense disablePadding>
                   {results.users.map((u: any) => (
                     <ListItem key={u.id} disablePadding>
-                      <ListItemButton sx={{ borderRadius: 1, py: 0.75 }}>
+                      <ListItemButton onClick={() => openDM(u.id)} sx={{ borderRadius: 1, py: 0.75 }}>
                         <ListItemAvatar>
                           <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main', fontSize: '0.75rem' }}>
                             {u.firstName?.charAt(0)?.toUpperCase()}

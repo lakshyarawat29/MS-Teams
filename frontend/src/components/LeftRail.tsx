@@ -103,8 +103,8 @@ export default function LeftRail() {
 
       {/* Bottom: Settings + Avatar */}
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, mb: 1 }}>
-        <Tooltip title="Settings" placement="right">
-          <IconButton size="small" sx={{ color: 'text.secondary', '&:hover': { color: 'text.primary' } }}>
+        <Tooltip title="Settings / Profile" placement="right">
+          <IconButton size="small" onClick={() => navigate('/profile')} sx={{ color: 'text.secondary', '&:hover': { color: 'text.primary' } }}>
             <SettingsIcon fontSize="small" />
           </IconButton>
         </Tooltip>
